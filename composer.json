@@ -1,0 +1,15 @@
+{
+	"name": "mnapoli/MetaModel",
+	"type": "library",
+	"autoload": {
+		"psr-0": {
+			"MetaModel": "src/",
+			"FunctionalTest": "tests/",
+			"UnitTest": "tests/"
+		}
+	},
+	"require": {
+		"doctrine/orm": "2.*",
+		"symfony/property-access": "@dev"
+	}
+}
