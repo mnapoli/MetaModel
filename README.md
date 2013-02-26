@@ -6,13 +6,40 @@ Each entity can have parents and children entities.
 
 Work in progress
 
+## Description of the object graph
+
+```php
+class Article
+{
+	/**
+	 * @ParentObject
+	 * @var Category
+	 **/
+	private $category;
+
+	/**
+	 * @ParentObjects
+	 * @var Tag[]
+	 **/
+	private $tags;
+
+	/**
+	 * @SubObjects
+	 * @var Comment[]
+	 **/
+	private $comments;
+
+	// ...
+}
+```
+
 ## Query syntax
 
 Get a specific object by its ID:
 
     Article(1)
 
-Model traversing (get all the articles of a category):
+Object graph traversing (get all the articles of a category):
 
     Category(1)/Article(*)
 
