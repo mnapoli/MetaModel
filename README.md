@@ -58,3 +58,11 @@ Field filtering over an association:
 Combinations:
 
     Blog[owner=User(1)]/Category(*)/Article(*)
+
+## Usages
+
+Those are both ideas and work in progress. To be completed.
+
+* Simplified object queries (from database)
+* Simplified Model/DB manipulation from console (e.g. instead of using phpMyAdmin, or building an admin interface, you can manipulate the DB with high level object queries)
+* Paths for anything meta on your model: logs, AOP, ACL (e.g. `User(1)` can edit `Category(12)/Article(*)`)
