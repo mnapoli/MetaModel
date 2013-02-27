@@ -39,6 +39,10 @@ Get a specific object by its ID:
 
     Article(1)
 
+Multiple primary keys can also be supported (watch for the order):
+
+    Article(1,12)
+
 Object graph traversing (get all the articles of a category):
 
     Category(1)/Article(*)
@@ -47,6 +51,10 @@ Field filtering:
 
     Article[author="bob"]
 
-Combination:
+Field filtering over an association:
 
-    Blog(12)/Category[published=true]/Article(*)
+    Article[author=User(1)]
+
+Combinations:
+
+    Blog[owner=User(1)]/Category(*)/Article(*)
