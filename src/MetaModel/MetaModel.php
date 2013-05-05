@@ -3,50 +3,64 @@
 namespace MetaModel;
 
 use Doctrine\ORM\EntityManager;
+use MetaModel\MML\AST\RootSelector;
+use MetaModel\MML\Parser;
 
 class MetaModel
 {
 
-	/**
-	 * @var EntityManager
-	 */
-	private $entityManager;
+    /**
+     * @var EntityManager
+     */
+    private $entityManager;
 
-	/**
-	 * @param string $query
-	 * @return mixed
-	 */
-	public function get($query)
-	{
-		$matches = array();
-		$result = preg_match('/^([\\a-zA-Z0-9]+)\(([a-zA-Z0-9]+|\*)\)$/', $query, $matches);
-		if ($result === 1) {
-			$class = $matches[1];
-			$id = $matches[2];
-			if ($id !== '*') {
-				return $this->entityManager->find($class, $id);
-			} else {
-				$qb = $this->entityManager->createQueryBuilder();
-				$qb->select('class');
-				$qb->from($class, 'class');
-				return $qb->getQuery()->getResult();
-			}
-		}
-		return null;
-	}
+    /**
+     * MML Parser
+     * @var Parser
+     */
+    private $parser;
 
-	/**
-	 * @return EntityManager
-	 */
-	public function getEntityManager() {
-		return $this->entityManager;
-	}
+    public function __construct()
+    {
+        $this->parser = new Parser();
+    }
 
-	/**
-	 * @param EntityManager $entityManager
-	 */
-	public function setEntityManager(EntityManager $entityManager) {
-		$this->entityManager = $entityManager;
-	}
+    /**
+     * @param string $query
+     * @return mixed
+     */
+    public function get($query)
+    {
+        $ast = $this->parser->parse($query);
+
+        if ($ast instanceof RootSelector) {
+            if ($ast->hasId()) {
+                return $this->entityManager->find($ast->getClassName(), $ast->getId());
+            } else {
+                $qb = $this->entityManager->createQueryBuilder();
+                $qb->select('class');
+                $qb->from($ast->getClassName(), 'class');
+                return $qb->getQuery()->getResult();
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return EntityManager
+     */
+    public function getEntityManager()
+    {
+        return $this->entityManager;
+    }
+
+    /**
+     * @param EntityManager $entityManager
+     */
+    public function setEntityManager(EntityManager $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
 
 }

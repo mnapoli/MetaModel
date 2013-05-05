@@ -44,6 +44,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
 
 		$result = $this->metaModel->get('FunctionalTest\MetaModel\Fixture\Article(*)');
 
+        $this->assertInternalType('array', $result);
 		$this->assertCount(1, $result);
 		$this->assertContains($article, $result);
 	}
@@ -56,6 +57,12 @@ class QueryTest extends \PHPUnit_Framework_TestCase
 		$result = $this->metaModel->get('FunctionalTest\MetaModel\Fixture\Article(1)');
 
 		$this->assertSame($article, $result);
+	}
+
+	public function testGetNotFound() {
+		$result = $this->metaModel->get('FunctionalTest\MetaModel\Fixture\Article(1)');
+
+		$this->assertNull($result);
 	}
 
 }
