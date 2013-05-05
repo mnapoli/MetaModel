@@ -39,6 +39,10 @@ Get a specific object by its ID:
 
     Article(1)
 
+Multiple primary keys can also be supported (watch for the order):
+
+    Article(1,12)
+
 Object graph traversing (get all the articles of a category):
 
     Category(1)/Article(*)
@@ -47,6 +51,18 @@ Field filtering:
 
     Article[author="bob"]
 
-Combination:
+Field filtering over an association:
 
-    Blog(12)/Category[published=true]/Article(*)
+    Article[author=User(1)]
+
+Combinations:
+
+    Blog[owner=User(1)]/Category(*)/Article(*)
+
+## Usages
+
+Those are both ideas and work in progress. To be completed.
+
+* Simplified object queries (from database)
+* Simplified Model/DB manipulation from console (e.g. instead of using phpMyAdmin, or building an admin interface, you can manipulate the DB with high level object queries)
+* Paths for anything meta on your model: logs, AOP, ACL (e.g. `User(1)` can edit `Category(12)/Article(*)`)
