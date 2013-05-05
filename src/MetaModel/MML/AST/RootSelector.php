@@ -1,13 +1,10 @@
 <?php
-/**
- * PHP-DI
- *
- * @link      http://mnapoli.github.io/PHP-DI/
- * @copyright Matthieu Napoli (http://mnapoli.fr/)
- * @license   http://www.opensource.org/licenses/mit-license.php MIT (see the LICENSE file)
- */
 
 namespace MetaModel\MML\AST;
+
+use Doctrine\ORM\EntityManager;
+use MetaModel\MML\Result\ObjectCollection;
+use MetaModel\MML\Result\SingleObject;
 
 class RootSelector
 {
@@ -32,28 +29,30 @@ class RootSelector
         $this->id = $id;
     }
 
-    /**
-     * @return string
-     */
-    public function getClassName()
+    public function execute(EntityManager $entityManager)
     {
-        return $this->className;
+        if ($this->hasId()) {
+            $object = $entityManager->find($this->className, $this->id);
+
+            $wrappedObject = new SingleObject($object);
+            return $wrappedObject;
+        } else {
+            $qb = $entityManager->createQueryBuilder();
+            $qb->select('class');
+            $qb->from($this->className, 'class');
+            $objects = $qb->getQuery()->getResult();
+
+            $collection = new ObjectCollection($objects);
+            return $collection;
+        }
     }
 
     /**
      * @return bool
      */
-    public function hasId()
+    private function hasId()
     {
         return $this->id !== null;
-    }
-
-    /**
-     * @return mixed|null
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 
 }

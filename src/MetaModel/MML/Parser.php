@@ -13,17 +13,17 @@ class Parser
 {
 
     /**
-     * Parses MML code and returns an AST
+     * Parses a MML expression and returns an AST
      *
-     * @param string $code
+     * @param string $expression
      *
      * @throws ParsingException
      * @return AST\RootSelector
      */
-	public function parse($code)
+	public function parse($expression)
 	{
         $matches = array();
-        $result = preg_match('/^([\\a-zA-Z0-9]+)\(([a-zA-Z0-9]+|\*)\)$/', $code, $matches);
+        $result = preg_match('/^([\\a-zA-Z0-9]+)\(([a-zA-Z0-9]+|\*)\)$/', $expression, $matches);
 
         if ($result === 1) {
             $className = $matches[1];
@@ -35,7 +35,7 @@ class Parser
             }
         }
 
-        throw new ParsingException("Selector '$code' not recognized");
+        throw new ParsingException("Expression '$expression' not recognized");
 	}
 
 }

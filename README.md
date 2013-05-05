@@ -4,7 +4,7 @@ MetaModel provides a model for representing, traversing and performing actions o
 
 Work in progress
 
-## Syntax
+## MML Syntax (MetaModel Language)
 
 Get a specific object by its ID:
 

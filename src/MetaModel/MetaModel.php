@@ -34,14 +34,7 @@ class MetaModel
         $ast = $this->parser->parse($query);
 
         if ($ast instanceof RootSelector) {
-            if ($ast->hasId()) {
-                return $this->entityManager->find($ast->getClassName(), $ast->getId());
-            } else {
-                $qb = $this->entityManager->createQueryBuilder();
-                $qb->select('class');
-                $qb->from($ast->getClassName(), 'class');
-                return $qb->getQuery()->getResult();
-            }
+            return $ast->execute($this->entityManager)->unwrap();
         }
 
         return null;
