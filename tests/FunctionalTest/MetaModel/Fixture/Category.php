@@ -11,14 +11,13 @@ class Category
 {
 
 	/**
-	 * @Id
-	 * @Column(type="integer")
+	 * @Id @Column(type="integer")
 	 */
 	private $id;
 
 	/**
 	 * @OneToMany(targetEntity="Article", mappedBy="category")
-	 **/
+	 */
 	private $articles;
 
 	public function __construct($id) {

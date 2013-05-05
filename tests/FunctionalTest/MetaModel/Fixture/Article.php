@@ -9,8 +9,7 @@ class Article
 {
 
 	/**
-	 * @Id
-	 * @Column(type="integer")
+	 * @Id @Column(type="integer")
 	 */
 	private $id;
 

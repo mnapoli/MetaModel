@@ -5,12 +5,17 @@ namespace FunctionalTest\MetaModel;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\Setup;
-use MetaModel\MetaModelService;
+use MetaModel\MetaModel;
 use FunctionalTest\MetaModel\Fixture\Category;
 use FunctionalTest\MetaModel\Fixture\Article;
 
-class TraversingTest extends \PHPUnit_Framework_TestCase
+class QueryTest extends \PHPUnit_Framework_TestCase
 {
+
+	/**
+	 * @var MetaModel
+	 */
+	private $metaModel;
 
 	/**
 	 * @var EntityManager
@@ -27,24 +32,30 @@ class TraversingTest extends \PHPUnit_Framework_TestCase
 		$this->em = EntityManager::create($dbParams, $config);
 		$tool = new SchemaTool($this->em);
 		$tool->createSchema($this->em->getMetadataFactory()->getAllMetadata());
+
+		$this->metaModel = new MetaModel();
+		$this->metaModel->setEntityManager($this->em);
 	}
 
-	public function test1() {
-		$service = new MetaModelService();
-		$service->setEntityManager($this->em);
-		$service->addChildrenAssociation('FunctionalTest\MetaModel\Fixture\Category', 'articles');
-
+	public function testGetAll() {
 		$article = new Article(1);
-		$category = new Category(1);
-		$category->addArticle($article);
-		$this->em->persist($category);
 		$this->em->persist($article);
 		$this->em->flush();
 
-		$children = $service->getChildren($category);
+		$result = $this->metaModel->get('FunctionalTest\MetaModel\Fixture\Article(*)');
 
-		$this->assertCount(1, $children);
-		$this->assertContains($article, $children);
+		$this->assertCount(1, $result);
+		$this->assertContains($article, $result);
+	}
+
+	public function testGetById() {
+		$article = new Article(1);
+		$this->em->persist($article);
+		$this->em->flush();
+
+		$result = $this->metaModel->get('FunctionalTest\MetaModel\Fixture\Article(1)');
+
+		$this->assertSame($article, $result);
 	}
 
 }
