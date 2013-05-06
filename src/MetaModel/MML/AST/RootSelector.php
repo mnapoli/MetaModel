@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityManager;
 use MetaModel\MML\Result\ObjectCollection;
 use MetaModel\MML\Result\SingleObject;
 
-class RootSelector
+class RootSelector extends Node
 {
 
     /**
@@ -29,6 +29,9 @@ class RootSelector
         $this->id = $id;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function execute(EntityManager $entityManager)
     {
         if ($this->hasId()) {
