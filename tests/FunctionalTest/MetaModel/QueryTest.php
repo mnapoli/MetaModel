@@ -5,6 +5,7 @@ namespace FunctionalTest\MetaModel;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\Setup;
+use MetaModel\Bridge\Doctrine\EntityManagerBridge;
 use MetaModel\MetaModel;
 use FunctionalTest\MetaModel\Fixture\Category;
 use FunctionalTest\MetaModel\Fixture\Article;
@@ -34,19 +35,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
 		$tool->createSchema($this->em->getMetadataFactory()->getAllMetadata());
 
 		$this->metaModel = new MetaModel();
-		$this->metaModel->setEntityManager($this->em);
-	}
-
-	public function testGetAll() {
-		$article = new Article(1);
-		$this->em->persist($article);
-		$this->em->flush();
-
-		$result = $this->metaModel->get('FunctionalTest\MetaModel\Fixture\Article(*)');
-
-        $this->assertInternalType('array', $result);
-		$this->assertCount(1, $result);
-		$this->assertContains($article, $result);
+		$this->metaModel->addObjectManager(new EntityManagerBridge($this->em));
 	}
 
 	public function testGetById() {
@@ -54,13 +43,13 @@ class QueryTest extends \PHPUnit_Framework_TestCase
 		$this->em->persist($article);
 		$this->em->flush();
 
-		$result = $this->metaModel->get('FunctionalTest\MetaModel\Fixture\Article(1)');
+		$result = $this->metaModel->run('FunctionalTest\MetaModel\Fixture\Article(1)');
 
 		$this->assertSame($article, $result);
 	}
 
 	public function testGetNotFound() {
-		$result = $this->metaModel->get('FunctionalTest\MetaModel\Fixture\Article(1)');
+		$result = $this->metaModel->run('FunctionalTest\MetaModel\Fixture\Article(1)');
 
 		$this->assertNull($result);
 	}

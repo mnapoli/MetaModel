@@ -2,58 +2,58 @@
 
 namespace MetaModel;
 
-use Doctrine\ORM\EntityManager;
-use MetaModel\MML\AST\RootSelector;
-use MetaModel\MML\Parser;
+use MetaModel\Parser\Model\Selector;
+use MetaModel\Parser\Parser;
 
+/**
+ * MetaModel
+ *
+ * @author Matthieu Napoli <matthieu@mnapoli.fr>
+ */
 class MetaModel
 {
-
     /**
-     * @var EntityManager
+     * @var ObjectManager[]
      */
-    private $entityManager;
+    private $objectManagers = [];
 
     /**
-     * MML Parser
      * @var Parser
      */
     private $parser;
 
-    public function __construct()
+    public function __construct(Parser $parser = null)
     {
-        $this->parser = new Parser();
+        $this->parser = $parser ?: new Parser();
     }
 
     /**
      * @param string $query
      * @return mixed
      */
-    public function get($query)
+    public function run($query)
     {
+        // Parses the expression
         $ast = $this->parser->parse($query);
 
-        if ($ast instanceof RootSelector) {
-            return $ast->execute($this->entityManager)->unwrap();
+        if ($ast instanceof Selector) {
+            foreach ($this->objectManagers as $objectManager) {
+                $result = $objectManager->getById($ast->getName(), $ast->getId());
+
+                if ($result !== null) {
+                    return $result;
+                }
+            }
         }
 
         return null;
     }
 
     /**
-     * @return EntityManager
+     * @param ObjectManager $objectManager
      */
-    public function getEntityManager()
+    public function addObjectManager(ObjectManager $objectManager)
     {
-        return $this->entityManager;
+        $this->objectManagers[] = $objectManager;
     }
-
-    /**
-     * @param EntityManager $entityManager
-     */
-    public function setEntityManager(EntityManager $entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
-
 }
