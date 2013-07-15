@@ -1,5 +1,5 @@
 {
-	"name": "mnapoli/MetaModel",
+	"name": "mnapoli/metamodel",
 	"type": "library",
 	"autoload": {
 		"psr-0": {
@@ -9,7 +9,7 @@
 		}
 	},
 	"require": {
-		"doctrine/orm": "2.*",
-		"symfony/property-access": "@dev"
+		"doctrine/orm": "2.3.*",
+		"symfony/property-access": "2.3.*"
 	}
 }
