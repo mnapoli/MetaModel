@@ -9,7 +9,6 @@
 		}
 	},
 	"require": {
-		"doctrine/orm": "2.3.*",
-		"symfony/property-access": "2.3.*"
+		"doctrine/orm": "2.3.*"
 	}
 }
