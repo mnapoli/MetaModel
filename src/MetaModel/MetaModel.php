@@ -29,13 +29,13 @@ class MetaModel
     }
 
     /**
-     * @param string $query
+     * @param string $expression
      * @return mixed
      */
-    public function run($query)
+    public function run($expression)
     {
         // Parses the expression
-        $ast = $this->parser->parse($query);
+        $ast = $this->parser->parse($expression);
 
         return $ast->execute($this);
     }

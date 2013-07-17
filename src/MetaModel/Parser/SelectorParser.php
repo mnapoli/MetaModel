@@ -12,7 +12,7 @@ use MetaModel\Parser\Model\Selector;
  */
 class SelectorParser
 {
-    const PATTERN_CLASS = '[\\a-zA-Z0-9]+';
+    const PATTERN_CLASS = '[\\\\a-zA-Z0-9]+';
     const PATTERN_ID = '[0-9]+';
 
     /**
@@ -40,7 +40,7 @@ class SelectorParser
 
     public function match($expression)
     {
-        $result = preg_match('/^(' . self::PATTERN_CLASS . ')\((' . self::PATTERN_ID . ')\)$/', $expression);
+        $result = preg_match('/^' . self::PATTERN_CLASS . '\(' . self::PATTERN_ID . '\)$/', $expression);
 
         return ($result === 1);
     }

@@ -19,4 +19,13 @@ class PropertyAccessParserTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($propertyAccess instanceof PropertyAccess);
         $this->assertEquals('id', $propertyAccess->getProperty());
     }
+
+    public function testNotMatching()
+    {
+        $parser = new PropertyAccessParser();
+
+        $this->assertFalse($parser->match('article()'));
+        $this->assertFalse($parser->match('article(1)'));
+        $this->assertFalse($parser->match('article\\test'));
+    }
 }

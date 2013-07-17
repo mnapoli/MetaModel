@@ -54,7 +54,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
 		$this->assertNull($result);
 	}
 
-    public function testPropertyAccess() {
+    public function testPropertyAccessScalar() {
         $article = new Article(1);
         $this->em->persist($article);
         $this->em->flush();
@@ -64,4 +64,35 @@ class QueryTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(1, $result);
     }
 
+    public function testPropertyAccessObject() {
+        $article = new Article(1);
+        $category = new Category(1);
+        $category->addArticle($article);
+        $article->setCategory($category);
+        $this->em->persist($article);
+        $this->em->persist($category);
+        $this->em->flush();
+
+        $result = $this->metaModel->run('FunctionalTest\MetaModel\Fixture\Article(1).category');
+
+        $this->assertSame($category, $result);
+
+        $result = $this->metaModel->run('FunctionalTest\MetaModel\Fixture\Category(1).articles');
+
+        $this->assertContainsOnly($article, $result);
+    }
+
+    public function testRecursivePropertyAccess() {
+        $article = new Article(1);
+        $category = new Category(1);
+        $category->addArticle($article);
+        $article->setCategory($category);
+        $this->em->persist($article);
+        $this->em->persist($category);
+        $this->em->flush();
+
+        $result = $this->metaModel->run('FunctionalTest\MetaModel\Fixture\Article(1).category.id');
+
+        $this->assertSame(1, $result);
+    }
 }

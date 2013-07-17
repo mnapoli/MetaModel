@@ -9,7 +9,7 @@ use MetaModel\MetaModel;
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class Selector
+class Selector implements Node
 {
     /**
      * Class name
@@ -22,11 +22,6 @@ class Selector
      * @var mixed|null
      */
     private $id;
-
-    /**
-     * @var Filter[]
-     */
-    private $filters = [];
 
     /**
      * @param string $class
@@ -44,20 +39,8 @@ class Selector
     }
 
     /**
-     * @param string   $class
-     * @param Filter[] $filters
-     * @return Selector
+     * {@inheritdoc}
      */
-    public static function createSelectorByFilters($class, array $filters)
-    {
-        $selector = new self();
-
-        $selector->name = $class;
-        $selector->filters = $filters;
-
-        return $selector;
-    }
-
     public function execute(MetaModel $metaModel)
     {
         foreach ($metaModel->getObjectManagers() as $objectManager) {
@@ -85,13 +68,5 @@ class Selector
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @return Filter[]
-     */
-    public function getFilters()
-    {
-        return $this->filters;
     }
 }

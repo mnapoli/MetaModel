@@ -9,7 +9,7 @@ use MetaModel\MetaModel;
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class PropertyAccess
+class PropertyAccess implements Node
 {
     /**
      * @var string
@@ -17,13 +17,16 @@ class PropertyAccess
     private $property;
 
     /**
-     * @var Selector
+     * @var Node
      */
-    private $selector;
+    private $subNode;
 
+    /**
+     * {@inheritdoc}
+     */
     public function execute(MetaModel $metaModel)
     {
-        $object = $this->selector->execute($metaModel);
+        $object = $this->subNode->execute($metaModel);
 
         $propertyAccessor = \Symfony\Component\PropertyAccess\PropertyAccess::createPropertyAccessor();
 
@@ -49,16 +52,16 @@ class PropertyAccess
     /**
      * @return Selector
      */
-    public function getSelector()
+    public function getSubNode()
     {
-        return $this->selector;
+        return $this->subNode;
     }
 
     /**
-     * @param Selector $selector
+     * @param Node $node
      */
-    public function setSelector(Selector $selector)
+    public function setSubNode(Node $node)
     {
-        $this->selector = $selector;
+        $this->subNode = $node;
     }
 }

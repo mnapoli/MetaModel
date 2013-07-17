@@ -4,7 +4,9 @@ namespace MetaModel\Parser;
 
 use JMS\Parser\AbstractParser;
 use JMS\Parser\SimpleLexer;
+use MetaModel\Parser\Model\Node;
 use MetaModel\Parser\Model\PropertyAccess;
+use MetaModel\Parser\Model\Selector;
 
 /**
  * MetaModel expression parser
@@ -17,6 +19,9 @@ class Parser extends AbstractParser
     const T_SELECTOR = 1;
     const T_PROPERTY = 2;
 
+    /**
+     * @return Parser
+     */
     public static function create()
     {
         $selectorParser = new SelectorParser();
@@ -25,12 +30,12 @@ class Parser extends AbstractParser
         $lexer = new SimpleLexer(
             '/
                 # ID selector
-                ([\\a-zA-Z0-9]+\([0-9]+\))
+                ([\\\\a-zA-Z0-9]+\([0-9]+\))
 
                 # Do not surround with () because . is not meaningful for our purpose
                 |\.
 
-                # Property
+                # Property access
                 |([a-zA-Z0-9]+)
             /x', // The x modifier tells PCRE to ignore whitespace in the regex above.
 
@@ -55,23 +60,32 @@ class Parser extends AbstractParser
     }
 
     /**
-     * @return mixed
+     *
+     * @throws ParsingException
+     * @return Node
      */
     protected function parseInternal()
     {
-        $result = $this->match(self::T_SELECTOR);
+        if (!$this->lexer->isNext(self::T_SELECTOR)) {
+            throw new ParsingException("First item of the expression should be a selector");
+        }
+
+        /** @var Node $node */
+        $node = $this->match(self::T_SELECTOR);
 
         while ($this->lexer->isNextAny(array(self::T_PROPERTY))) {
             if ($this->lexer->isNext(self::T_PROPERTY)) {
                 /** @var PropertyAccess $propertyAccess */
                 $propertyAccess = $this->match(self::T_PROPERTY);
-                $propertyAccess->setSelector($result);
-                $result = $propertyAccess;
-            } else {
-                throw new \LogicException('Parsing error');
+                $propertyAccess->setSubNode($node);
+                $node = $propertyAccess;
             }
         }
 
-        return $result;
+        if ($this->lexer->isNext(self::T_SELECTOR)) {
+            throw new ParsingException("Unexpected selector");
+        }
+
+        return $node;
     }
 }
