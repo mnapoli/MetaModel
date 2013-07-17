@@ -2,9 +2,9 @@
 
 namespace MetaModel;
 
-use MetaModel\Parser\Model\PropertyAccess;
-use MetaModel\Parser\Model\Selector;
+use JMS\Parser\SyntaxErrorException;
 use MetaModel\Parser\Parser;
+use MetaModel\Parser\ParsingException;
 
 /**
  * MetaModel
@@ -29,13 +29,19 @@ class MetaModel
     }
 
     /**
+     * Run a MetaModel expression
      * @param string $expression
+     * @throws ParsingException
      * @return mixed
      */
     public function run($expression)
     {
         // Parses the expression
-        $ast = $this->parser->parse($expression);
+        try {
+            $ast = $this->parser->parse($expression);
+        } catch (SyntaxErrorException $e) {
+            throw new ParsingException($e->getMessage(), 0, $e);
+        }
 
         return $ast->execute($this);
     }

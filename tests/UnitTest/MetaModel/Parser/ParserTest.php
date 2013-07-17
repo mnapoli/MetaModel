@@ -71,8 +71,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \MetaModel\Parser\ParsingException
-     * @expectedExceptionMessage Unexpected selector
+     * @expectedException \JMS\Parser\SyntaxErrorException
+     * @expectedExceptionMessage Expected end of input, but got "Article(2)"
      */
     public function selectorShouldNotBeNested()
     {

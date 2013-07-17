@@ -46,13 +46,13 @@ class Parser extends AbstractParser
             // an integer from the map above, the second element the normalized value.
             function($part) use ($selectorParser, $propertyAccessParser) {
                 if ($selectorParser->match($part)) {
-                    return array(1, $selectorParser->parse($part));
+                    return array(self::T_SELECTOR, $part);
                 }
                 if ($propertyAccessParser->match($part)) {
-                    return array(2, $propertyAccessParser->parse($part));
+                    return array(self::T_PROPERTY, $part);
                 }
 
-                return array(0, $part);
+                return array(self::T_UNKNOWN, $part);
             }
         );
 
@@ -66,24 +66,25 @@ class Parser extends AbstractParser
      */
     protected function parseInternal()
     {
+        $selectorParser = new SelectorParser();
+        $propertyAccessParser = new PropertyAccessParser();
+
         if (!$this->lexer->isNext(self::T_SELECTOR)) {
             throw new ParsingException("First item of the expression should be a selector");
         }
 
+        $part = $this->match(self::T_SELECTOR);
         /** @var Node $node */
-        $node = $this->match(self::T_SELECTOR);
+        $node = $selectorParser->parse($part);
 
         while ($this->lexer->isNextAny(array(self::T_PROPERTY))) {
             if ($this->lexer->isNext(self::T_PROPERTY)) {
+                $part = $this->match(self::T_PROPERTY);
                 /** @var PropertyAccess $propertyAccess */
-                $propertyAccess = $this->match(self::T_PROPERTY);
+                $propertyAccess = $propertyAccessParser->parse($part);
                 $propertyAccess->setSubNode($node);
                 $node = $propertyAccess;
             }
-        }
-
-        if ($this->lexer->isNext(self::T_SELECTOR)) {
-            throw new ParsingException("Unexpected selector");
         }
 
         return $node;
