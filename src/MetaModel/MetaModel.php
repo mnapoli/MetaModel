@@ -24,7 +24,7 @@ class MetaModel
 
     public function __construct(Parser $parser = null)
     {
-        $this->parser = $parser ?: new Parser();
+        $this->parser = $parser ?: Parser::create();
     }
 
     /**

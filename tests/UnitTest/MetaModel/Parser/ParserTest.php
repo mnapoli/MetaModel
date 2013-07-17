@@ -9,7 +9,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 {
     public function testParseCorrectSelector()
     {
-        $selectorParser = new Parser();
+        $selectorParser = Parser::create();
 
         $selector = $selectorParser->parse('Article(1)');
 

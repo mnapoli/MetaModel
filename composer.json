@@ -8,7 +8,10 @@
 			"UnitTest": "tests/"
 		}
 	},
-	"require": {
+    "require": {
+        "jms/parser-lib": "1.0.*"
+    },
+	"require-dev": {
 		"doctrine/orm": "2.3.*"
 	}
 }
