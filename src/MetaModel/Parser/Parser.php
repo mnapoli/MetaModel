@@ -4,6 +4,7 @@ namespace MetaModel\Parser;
 
 use JMS\Parser\AbstractParser;
 use JMS\Parser\SimpleLexer;
+use MetaModel\Parser\Model\PropertyAccess;
 
 /**
  * MetaModel expression parser
@@ -19,7 +20,7 @@ class Parser extends AbstractParser
     public static function create()
     {
         $selectorParser = new SelectorParser();
-        $propertyParser = new PropertyParser();
+        $propertyAccessParser = new PropertyAccessParser();
 
         $lexer = new SimpleLexer(
             '/
@@ -38,12 +39,12 @@ class Parser extends AbstractParser
 
             // This function tells the lexer which type a token has. The first element is
             // an integer from the map above, the second element the normalized value.
-            function($part) use ($selectorParser, $propertyParser) {
+            function($part) use ($selectorParser, $propertyAccessParser) {
                 if ($selectorParser->match($part)) {
                     return array(1, $selectorParser->parse($part));
                 }
-                if ($propertyParser->match($part)) {
-                    return array(2, $propertyParser->parse($part));
+                if ($propertyAccessParser->match($part)) {
+                    return array(2, $propertyAccessParser->parse($part));
                 }
 
                 return array(0, $part);
@@ -62,8 +63,10 @@ class Parser extends AbstractParser
 
         while ($this->lexer->isNextAny(array(self::T_PROPERTY))) {
             if ($this->lexer->isNext(self::T_PROPERTY)) {
-                $this->lexer->moveNext();
-                $propertyFilter = $this->match(self::T_PROPERTY);
+                /** @var PropertyAccess $propertyAccess */
+                $propertyAccess = $this->match(self::T_PROPERTY);
+                $propertyAccess->setSelector($result);
+                $result = $propertyAccess;
             } else {
                 throw new \LogicException('Parsing error');
             }

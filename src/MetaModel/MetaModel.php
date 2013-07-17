@@ -2,6 +2,7 @@
 
 namespace MetaModel;
 
+use MetaModel\Parser\Model\PropertyAccess;
 use MetaModel\Parser\Model\Selector;
 use MetaModel\Parser\Parser;
 
@@ -36,17 +37,7 @@ class MetaModel
         // Parses the expression
         $ast = $this->parser->parse($query);
 
-        if ($ast instanceof Selector) {
-            foreach ($this->objectManagers as $objectManager) {
-                $result = $objectManager->getById($ast->getName(), $ast->getId());
-
-                if ($result !== null) {
-                    return $result;
-                }
-            }
-        }
-
-        return null;
+        return $ast->execute($this);
     }
 
     /**
@@ -55,5 +46,13 @@ class MetaModel
     public function addObjectManager(ObjectManager $objectManager)
     {
         $this->objectManagers[] = $objectManager;
+    }
+
+    /**
+     * @return ObjectManager[]
+     */
+    public function getObjectManagers()
+    {
+        return $this->objectManagers;
     }
 }

@@ -11,6 +11,8 @@ class SelectorParserTest extends \PHPUnit_Framework_TestCase
     {
         $selectorParser = new SelectorParser();
 
+        $this->assertTrue($selectorParser->match('Article(1)'));
+
         $selector = $selectorParser->parse('Article(1)');
 
         $this->assertTrue($selector instanceof Selector);
@@ -21,6 +23,8 @@ class SelectorParserTest extends \PHPUnit_Framework_TestCase
     public function testParseNamespaceSelector()
     {
         $selectorParser = new SelectorParser();
+
+        $this->assertTrue($selectorParser->match('My\Article(1)'));
 
         $selector = $selectorParser->parse('My\Article(1)');
 

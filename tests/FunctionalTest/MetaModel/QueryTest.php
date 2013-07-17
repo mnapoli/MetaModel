@@ -54,4 +54,14 @@ class QueryTest extends \PHPUnit_Framework_TestCase
 		$this->assertNull($result);
 	}
 
+    public function testPropertyAccess() {
+        $article = new Article(1);
+        $this->em->persist($article);
+        $this->em->flush();
+
+        $result = $this->metaModel->run('FunctionalTest\MetaModel\Fixture\Article(1).id');
+
+        $this->assertSame(1, $result);
+    }
+
 }

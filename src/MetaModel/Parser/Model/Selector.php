@@ -2,6 +2,8 @@
 
 namespace MetaModel\Parser\Model;
 
+use MetaModel\MetaModel;
+
 /**
  * Selector
  *
@@ -54,6 +56,19 @@ class Selector
         $selector->filters = $filters;
 
         return $selector;
+    }
+
+    public function execute(MetaModel $metaModel)
+    {
+        foreach ($metaModel->getObjectManagers() as $objectManager) {
+            $result = $objectManager->getById($this->name, $this->id);
+
+            if ($result !== null) {
+                return $result;
+            }
+        }
+
+        return null;
     }
 
     /**

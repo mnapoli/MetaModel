@@ -2,15 +2,16 @@
 
 namespace MetaModel\Parser;
 
+use MetaModel\Parser\Model\PropertyAccess;
 use MetaModel\Parser\ParsingException;
 use MetaModel\Parser\Model\Selector;
 
 /**
- * Property parser
+ * Property access parser
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class PropertyParser
+class PropertyAccessParser
 {
     const PATTERN = '[a-zA-Z0-9]+';
 
@@ -20,7 +21,7 @@ class PropertyParser
      * @param string $expression
      *
      * @throws ParsingException
-     * @return Selector
+     * @return PropertyAccess
      */
     public function parse($expression)
     {
@@ -29,7 +30,10 @@ class PropertyParser
 
         if ($result === 1) {
             $property = $matches[1];
-            // TODO
+
+            $propertyAccess = new PropertyAccess();
+            $propertyAccess->setProperty($property);
+            return $propertyAccess;
         }
 
         throw new ParsingException("Expression '$expression' not recognized");
