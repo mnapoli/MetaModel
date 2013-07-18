@@ -2,17 +2,17 @@
 
 namespace MetaModel\Parser;
 
-use MetaModel\Model\PropertyAccess;
+use MetaModel\Model\ArrayAccess;
 use MetaModel\Parser\ParsingException;
 
 /**
- * Property access parser
+ * Array access parser
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class PropertyAccessParser
+class ArrayAccessParser
 {
-    const PATTERN_NAME = '[_a-zA-Z0-9]+';
+    const PATTERN_KEY = '[_a-zA-Z0-9]+';
 
     /**
      * Parses an expression and returns a model
@@ -20,19 +20,18 @@ class PropertyAccessParser
      * @param string $expression
      *
      * @throws ParsingException
-     * @return PropertyAccess
+     * @return ArrayAccess
      */
     public function parse($expression)
     {
         $matches = array();
-        $result = preg_match('/^\\.(' . self::PATTERN_NAME . ')$/', $expression, $matches);
+        $result = preg_match('/^\\[(' . self::PATTERN_KEY . ')\\]$/', $expression, $matches);
 
         if ($result === 1) {
-            $property = $matches[1];
+            $key = $matches[1];
 
-            $propertyAccess = new PropertyAccess();
-            $propertyAccess->setProperty($property);
-            return $propertyAccess;
+            $arrayAccess = new ArrayAccess($key);
+            return $arrayAccess;
         }
 
         throw new ParsingException("Expression '$expression' not recognized");
@@ -40,7 +39,7 @@ class PropertyAccessParser
 
     public function match($expression)
     {
-        $result = preg_match('/^\\.' . self::PATTERN_NAME . '$/', $expression, $matches);
+        $result = preg_match('/^\\[' . self::PATTERN_KEY . '\\]$/', $expression, $matches);
 
         return ($result === 1);
     }

@@ -50,7 +50,7 @@ class PropertyAccess implements Node
     }
 
     /**
-     * @return IdSelector
+     * @return Node
      */
     public function getSubNode()
     {

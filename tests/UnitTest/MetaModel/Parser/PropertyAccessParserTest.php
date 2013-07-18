@@ -3,7 +3,6 @@
 namespace UnitTest\MetaModel\Parser;
 
 use MetaModel\Model\PropertyAccess;
-use MetaModel\Model\IdSelector;
 use MetaModel\Parser\PropertyAccessParser;
 
 class PropertyAccessParserTest extends \PHPUnit_Framework_TestCase

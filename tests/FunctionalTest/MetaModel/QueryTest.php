@@ -124,6 +124,21 @@ class QueryTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(1, $result);
     }
 
+    public function testArrayAccess()
+    {
+        $article = new Article(1);
+        $category = new Category(1);
+        $category->addArticle($article);
+        $article->setCategory($category);
+        $this->em->persist($article);
+        $this->em->persist($category);
+        $this->em->flush();
+
+        $result = $this->metaModel->run('FunctionalTest\MetaModel\Fixture\Category(1).articles[0]');
+
+        $this->assertSame($article, $result);
+    }
+
     public function testMethodCall()
     {
         $article = new Article(1);

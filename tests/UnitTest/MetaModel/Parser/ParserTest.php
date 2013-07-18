@@ -2,6 +2,7 @@
 
 namespace UnitTest\MetaModel\Parser;
 
+use MetaModel\Model\ArrayAccess;
 use MetaModel\Model\MethodCall;
 use MetaModel\Model\NamedSelector;
 use MetaModel\Model\PropertyAccess;
@@ -14,7 +15,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     {
         $parser = Parser::create();
 
-        /** @var \MetaModel\Model\IdSelector $ast */
+        /** @var IdSelector $ast */
         $ast = $parser->parse('Article(1)');
 
         $this->assertTrue($ast instanceof IdSelector);
@@ -37,23 +38,24 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     {
         $parser = Parser::create();
 
-        /** @var \MetaModel\Model\PropertyAccess $ast */
+        /** @var PropertyAccess $ast */
         $ast = $parser->parse('Article(1).id');
 
         $this->assertTrue($ast instanceof PropertyAccess);
         $this->assertEquals('id', $ast->getProperty());
 
-        $selector = $ast->getSubNode();
-        $this->assertTrue($selector instanceof IdSelector);
-        $this->assertEquals('Article', $selector->getName());
-        $this->assertEquals(1, $selector->getId());
+        $subNode = $ast->getSubNode();
+        /** @var IdSelector $subNode */
+        $this->assertTrue($subNode instanceof IdSelector);
+        $this->assertEquals('Article', $subNode->getName());
+        $this->assertEquals(1, $subNode->getId());
     }
 
     public function testParseRecursivePropertyAccess()
     {
         $parser = Parser::create();
 
-        /** @var \MetaModel\Model\PropertyAccess $ast */
+        /** @var PropertyAccess $ast */
         $ast = $parser->parse('Article(1).foo.bar');
 
         $this->assertTrue($ast instanceof PropertyAccess);
@@ -65,7 +67,41 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foo', $subNode->getProperty());
 
         $subNode = $subNode->getSubNode();
-        /** @var \MetaModel\Model\IdSelector $subNode */
+        /** @var IdSelector $subNode */
+        $this->assertTrue($subNode instanceof IdSelector);
+        $this->assertEquals('Article', $subNode->getName());
+        $this->assertEquals(1, $subNode->getId());
+    }
+
+    public function testParseArrayAccessStringKey()
+    {
+        $parser = Parser::create();
+
+        /** @var ArrayAccess $ast */
+        $ast = $parser->parse('Article(1)[id]');
+
+        $this->assertTrue($ast instanceof ArrayAccess);
+        $this->assertSame('id', $ast->getKey());
+
+        $subNode = $ast->getSubNode();
+        /** @var IdSelector $subNode */
+        $this->assertTrue($subNode instanceof IdSelector);
+        $this->assertEquals('Article', $subNode->getName());
+        $this->assertEquals(1, $subNode->getId());
+    }
+
+    public function testParseArrayAccessIntKey()
+    {
+        $parser = Parser::create();
+
+        /** @var ArrayAccess $ast */
+        $ast = $parser->parse('Article(1)[1]');
+
+        $this->assertTrue($ast instanceof ArrayAccess);
+        $this->assertSame(1, $ast->getKey());
+
+        $subNode = $ast->getSubNode();
+        /** @var IdSelector $subNode */
         $this->assertTrue($subNode instanceof IdSelector);
         $this->assertEquals('Article', $subNode->getName());
         $this->assertEquals(1, $subNode->getId());
@@ -75,29 +111,30 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     {
         $parser = Parser::create();
 
-        /** @var \MetaModel\Model\MethodCall $ast */
+        /** @var MethodCall $ast */
         $ast = $parser->parse('Article(1).getId()');
 
         $this->assertTrue($ast instanceof MethodCall);
         $this->assertEquals('getId', $ast->getMethod());
 
-        $selector = $ast->getSubNode();
-        $this->assertTrue($selector instanceof IdSelector);
-        $this->assertEquals('Article', $selector->getName());
-        $this->assertEquals(1, $selector->getId());
+        $subNode = $ast->getSubNode();
+        /** @var IdSelector $subNode */
+        $this->assertTrue($subNode instanceof IdSelector);
+        $this->assertEquals('Article', $subNode->getName());
+        $this->assertEquals(1, $subNode->getId());
     }
 
     public function testParseRecursiveMethodCall()
     {
         $parser = Parser::create();
 
-        /** @var \MetaModel\Model\MethodCall $ast */
+        /** @var MethodCall $ast */
         $ast = $parser->parse('Article(1).foo().bar()');
 
         $this->assertTrue($ast instanceof MethodCall);
         $this->assertEquals('bar', $ast->getMethod());
 
-        /** @var \MetaModel\Model\MethodCall $subNode */
+        /** @var MethodCall $subNode */
         $subNode = $ast->getSubNode();
         $this->assertTrue($subNode instanceof MethodCall);
         $this->assertEquals('foo', $subNode->getMethod());
@@ -113,7 +150,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     {
         $parser = Parser::create();
 
-        /** @var \MetaModel\Model\PropertyAccess $ast */
+        /** @var PropertyAccess $ast */
         $ast = $parser->parse('Article(1).foo().bar');
 
         $this->assertTrue($ast instanceof PropertyAccess);
@@ -135,7 +172,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     {
         $parser = Parser::create();
 
-        /** @var \MetaModel\Model\MethodCall $ast */
+        /** @var MethodCall $ast */
         $ast = $parser->parse('Article(1).foo.bar()');
 
         $this->assertTrue($ast instanceof MethodCall);
