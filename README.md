@@ -2,6 +2,8 @@
 
 MetaModel provides a model for representing, traversing and performing actions on your model (Doctrine entities).
 
+[![Build Status](https://travis-ci.org/mnapoli/MetaModel.png?branch=master)](https://travis-ci.org/mnapoli/MetaModel) [![Coverage Status](https://coveralls.io/repos/mnapoli/MetaModel/badge.png?branch=master)](https://coveralls.io/r/mnapoli/MetaModel?branch=master)
+
 Work in progress
 
 ## MML Syntax (MetaModel Language)
