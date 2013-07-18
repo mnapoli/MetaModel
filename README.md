@@ -46,6 +46,17 @@ User[email="me@example.com"].resetPassword()
 Article(*).generateExtract()
 ```
 
+## Integration
+
+MetaModel finds objects in data sources.
+You can add any data source by implementing the simple interfaces: `ObjectManager` and `Container`.
+
+Some libraries are already supported natively:
+
+- Doctrine's Entity Manager: `MetaModel\Bridge\Doctrine\EntityManagerBridge`
+
+Add your own by submitting a pull request.
+
 ## Usages
 
 Those are both ideas and work in progress. To be completed.

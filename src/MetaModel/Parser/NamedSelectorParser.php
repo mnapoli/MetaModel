@@ -2,18 +2,17 @@
 
 namespace MetaModel\Parser;
 
+use MetaModel\Parser\Model\NamedSelector;
 use MetaModel\Parser\ParsingException;
-use MetaModel\Parser\Model\Selector;
 
 /**
- * Selector parser
+ * Named selector parser
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class SelectorParser
+class NamedSelectorParser
 {
-    const PATTERN_CLASS = '[\\\\_a-zA-Z0-9]+';
-    const PATTERN_ID = '[0-9]+';
+    const PATTERN = '[\\\\_a-zA-Z0-9]+';
 
     /**
      * Parses an expression and returns a model
@@ -21,18 +20,17 @@ class SelectorParser
      * @param string $expression
      *
      * @throws ParsingException
-     * @return Selector
+     * @return NamedSelector
      */
     public function parse($expression)
     {
         $matches = array();
-        $result = preg_match('/^(' . self::PATTERN_CLASS . ')\((' . self::PATTERN_ID . ')\)$/', $expression, $matches);
+        $result = preg_match('/^(' . self::PATTERN . ')$/', $expression, $matches);
 
         if ($result === 1) {
-            $className = $matches[1];
-            $id = $matches[2];
+            $name = $matches[1];
 
-            return Selector::createSelectorById($className, $id);
+            return new NamedSelector($name);
         }
 
         throw new ParsingException("Expression '$expression' not recognized");
@@ -40,7 +38,7 @@ class SelectorParser
 
     public function match($expression)
     {
-        $result = preg_match('/^' . self::PATTERN_CLASS . '\(' . self::PATTERN_ID . '\)$/', $expression);
+        $result = preg_match('/^' . self::PATTERN . '$/', $expression);
 
         return ($result === 1);
     }

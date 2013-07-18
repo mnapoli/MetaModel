@@ -11,9 +11,9 @@ class MethodCallParserTest extends \PHPUnit_Framework_TestCase
     {
         $parser = new MethodCallParser();
 
-        $this->assertTrue($parser->match('getStuff()'));
+        $this->assertTrue($parser->match('.getStuff()'));
 
-        $methodCall = $parser->parse('getStuff()');
+        $methodCall = $parser->parse('.getStuff()');
 
         $this->assertTrue($methodCall instanceof MethodCall);
         $this->assertEquals('getStuff', $methodCall->getMethod());
@@ -23,16 +23,17 @@ class MethodCallParserTest extends \PHPUnit_Framework_TestCase
     {
         $parser = new MethodCallParser();
 
-        $this->assertTrue($parser->match('getStuff()'));
-        $this->assertTrue($parser->match('get_stuff()'));
-        $this->assertTrue($parser->match('GET_STUFF()'));
+        $this->assertTrue($parser->match('.getStuff()'));
+        $this->assertTrue($parser->match('.get_stuff()'));
+        $this->assertTrue($parser->match('.GET_STUFF()'));
     }
 
     public function testNotMatching()
     {
         $parser = new MethodCallParser();
 
-        $this->assertFalse($parser->match('foo'));
-        $this->assertFalse($parser->match('foo(1)'));
+        $this->assertFalse($parser->match('foo()'));
+        $this->assertFalse($parser->match('.foo'));
+        $this->assertFalse($parser->match('.foo(1)'));
     }
 }

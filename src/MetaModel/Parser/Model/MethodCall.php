@@ -55,7 +55,7 @@ class MethodCall implements Node
     }
 
     /**
-     * @return Selector
+     * @return IdSelector
      */
     public function getSubNode()
     {

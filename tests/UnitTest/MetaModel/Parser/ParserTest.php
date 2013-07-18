@@ -3,22 +3,34 @@
 namespace UnitTest\MetaModel\Parser;
 
 use MetaModel\Parser\Model\MethodCall;
+use MetaModel\Parser\Model\NamedSelector;
 use MetaModel\Parser\Model\PropertyAccess;
-use MetaModel\Parser\Model\Selector;
+use MetaModel\Parser\Model\IdSelector;
 use MetaModel\Parser\Parser;
 
 class ParserTest extends \PHPUnit_Framework_TestCase
 {
-    public function testParseSelector()
+    public function testParseIdSelector()
     {
         $parser = Parser::create();
 
-        /** @var Selector $ast */
+        /** @var IdSelector $ast */
         $ast = $parser->parse('Article(1)');
 
-        $this->assertTrue($ast instanceof Selector);
+        $this->assertTrue($ast instanceof IdSelector);
         $this->assertEquals('Article', $ast->getName());
         $this->assertEquals(1, $ast->getId());
+    }
+
+    public function testParseNamedSelector()
+    {
+        $parser = Parser::create();
+
+        /** @var NamedSelector $ast */
+        $ast = $parser->parse('ArticleService');
+
+        $this->assertTrue($ast instanceof NamedSelector);
+        $this->assertEquals('ArticleService', $ast->getName());
     }
 
     public function testParsePropertyAccess()
@@ -32,7 +44,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('id', $ast->getProperty());
 
         $selector = $ast->getSubNode();
-        $this->assertTrue($selector instanceof Selector);
+        $this->assertTrue($selector instanceof IdSelector);
         $this->assertEquals('Article', $selector->getName());
         $this->assertEquals(1, $selector->getId());
     }
@@ -53,8 +65,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foo', $subNode->getProperty());
 
         $subNode = $subNode->getSubNode();
-        /** @var Selector $subNode */
-        $this->assertTrue($subNode instanceof Selector);
+        /** @var IdSelector $subNode */
+        $this->assertTrue($subNode instanceof IdSelector);
         $this->assertEquals('Article', $subNode->getName());
         $this->assertEquals(1, $subNode->getId());
     }
@@ -70,7 +82,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('getId', $ast->getMethod());
 
         $selector = $ast->getSubNode();
-        $this->assertTrue($selector instanceof Selector);
+        $this->assertTrue($selector instanceof IdSelector);
         $this->assertEquals('Article', $selector->getName());
         $this->assertEquals(1, $selector->getId());
     }
@@ -91,8 +103,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foo', $subNode->getMethod());
 
         $subNode = $subNode->getSubNode();
-        /** @var Selector $subNode */
-        $this->assertTrue($subNode instanceof Selector);
+        /** @var IdSelector $subNode */
+        $this->assertTrue($subNode instanceof IdSelector);
         $this->assertEquals('Article', $subNode->getName());
         $this->assertEquals(1, $subNode->getId());
     }
@@ -113,8 +125,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foo', $subNode->getMethod());
 
         $subNode = $subNode->getSubNode();
-        /** @var Selector $subNode */
-        $this->assertTrue($subNode instanceof Selector);
+        /** @var IdSelector $subNode */
+        $this->assertTrue($subNode instanceof IdSelector);
         $this->assertEquals('Article', $subNode->getName());
         $this->assertEquals(1, $subNode->getId());
     }
@@ -135,27 +147,25 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foo', $subNode->getProperty());
 
         $subNode = $subNode->getSubNode();
-        /** @var Selector $subNode */
-        $this->assertTrue($subNode instanceof Selector);
+        /** @var IdSelector $subNode */
+        $this->assertTrue($subNode instanceof IdSelector);
         $this->assertEquals('Article', $subNode->getName());
         $this->assertEquals(1, $subNode->getId());
     }
 
     /**
      * @test
-     * @expectedException \MetaModel\Parser\ParsingException
-     * @expectedExceptionMessage First item of the expression should be a selector
+     * @expectedException \JMS\Parser\SyntaxErrorException
      */
     public function firstItemShouldBeASelector()
     {
         $parser = Parser::create();
-        $parser->parse('foo.bar');
+        $parser->parse('foo().bar');
     }
 
     /**
      * @test
      * @expectedException \JMS\Parser\SyntaxErrorException
-     * @expectedExceptionMessage Expected end of input, but got "Article(2)"
      */
     public function selectorShouldNotBeNested()
     {

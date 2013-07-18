@@ -26,7 +26,7 @@ class MethodCallParser
     public function parse($expression)
     {
         $matches = array();
-        $result = preg_match('/^(' . self::PATTERN_NAME . ')' . self::PATTERN_PARAMETERS . '$/', $expression, $matches);
+        $result = preg_match('/^\\.(' . self::PATTERN_NAME . ')' . self::PATTERN_PARAMETERS . '$/', $expression, $matches);
 
         if ($result === 1) {
             $method = $matches[1];
@@ -41,7 +41,7 @@ class MethodCallParser
 
     public function match($expression)
     {
-        $result = preg_match('/^' . self::PATTERN_NAME . self::PATTERN_PARAMETERS . '$/', $expression);
+        $result = preg_match('/^\\.' . self::PATTERN_NAME . self::PATTERN_PARAMETERS . '$/', $expression);
 
         return ($result === 1);
     }

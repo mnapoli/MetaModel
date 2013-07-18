@@ -3,7 +3,7 @@
 namespace MetaModel\Bridge\Doctrine;
 
 use Doctrine\ORM\EntityManager;
-use MetaModel\ObjectManager;
+use MetaModel\DataSource\ObjectManager;
 
 /**
  * Bridge to Doctrine's entity manager

@@ -3,6 +3,8 @@
 namespace MetaModel;
 
 use JMS\Parser\SyntaxErrorException;
+use MetaModel\DataSource\Container;
+use MetaModel\DataSource\ObjectManager;
 use MetaModel\Parser\Parser;
 use MetaModel\Parser\ParsingException;
 
@@ -17,6 +19,11 @@ class MetaModel
      * @var ObjectManager[]
      */
     private $objectManagers = [];
+
+    /**
+     * @var Container[]
+     */
+    private $containers = [];
 
     /**
      * @var Parser
@@ -60,5 +67,21 @@ class MetaModel
     public function getObjectManagers()
     {
         return $this->objectManagers;
+    }
+
+    /**
+     * @param Container $container
+     */
+    public function addContainer(Container $container)
+    {
+        $this->containers[] = $container;
+    }
+
+    /**
+     * @return Container[]
+     */
+    public function getContainers()
+    {
+        return $this->containers;
     }
 }

@@ -49,9 +49,32 @@ class QueryTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($article, $result);
     }
 
-    public function testGetNotFound()
+    public function testGetByIdNotFound()
     {
         $result = $this->metaModel->run('FunctionalTest\MetaModel\Fixture\Article(1)');
+
+        $this->assertNull($result);
+    }
+
+    public function testGetByName()
+    {
+        $articleService = new \stdClass();
+
+        $container = $this->getMockForAbstractClass('MetaModel\DataSource\Container');
+        $container->expects($this->once())
+            ->method('get')
+            ->with('ArticleService')
+            ->will($this->returnValue($articleService));
+        $this->metaModel->addContainer($container);
+
+        $result = $this->metaModel->run('ArticleService');
+
+        $this->assertSame($articleService, $result);
+    }
+
+    public function testGetByNameNotFound()
+    {
+        $result = $this->metaModel->run('ArticleService');
 
         $this->assertNull($result);
     }

@@ -5,11 +5,11 @@ namespace MetaModel\Parser\Model;
 use MetaModel\MetaModel;
 
 /**
- * Selector
+ * ID selector
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class Selector implements Node
+class IdSelector implements Node
 {
     /**
      * Class name
@@ -25,17 +25,12 @@ class Selector implements Node
 
     /**
      * @param string $class
-     * @param mixed  $id ID selector
-     * @return Selector
+     * @param mixed  $id
      */
-    public static function createSelectorById($class, $id)
+    public function __construct($class, $id)
     {
-        $selector = new self();
-
-        $selector->name = $class;
-        $selector->id = $id;
-
-        return $selector;
+        $this->name = $class;
+        $this->id = $id;
     }
 
     /**

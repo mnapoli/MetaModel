@@ -2,17 +2,18 @@
 
 namespace MetaModel\Parser;
 
-use MetaModel\Parser\Model\PropertyAccess;
 use MetaModel\Parser\ParsingException;
+use MetaModel\Parser\Model\IdSelector;
 
 /**
- * Property access parser
+ * ID selector parser
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class PropertyAccessParser
+class IdSelectorParser
 {
-    const PATTERN_NAME = '[_a-zA-Z0-9]+';
+    const PATTERN_CLASS = '[\\\\_a-zA-Z0-9]+';
+    const PATTERN_ID = '[0-9]+';
 
     /**
      * Parses an expression and returns a model
@@ -20,19 +21,18 @@ class PropertyAccessParser
      * @param string $expression
      *
      * @throws ParsingException
-     * @return PropertyAccess
+     * @return IdSelector
      */
     public function parse($expression)
     {
         $matches = array();
-        $result = preg_match('/^\\.(' . self::PATTERN_NAME . ')$/', $expression, $matches);
+        $result = preg_match('/^(' . self::PATTERN_CLASS . ')\((' . self::PATTERN_ID . ')\)$/', $expression, $matches);
 
         if ($result === 1) {
-            $property = $matches[1];
+            $className = $matches[1];
+            $id = $matches[2];
 
-            $propertyAccess = new PropertyAccess();
-            $propertyAccess->setProperty($property);
-            return $propertyAccess;
+            return new IdSelector($className, $id);
         }
 
         throw new ParsingException("Expression '$expression' not recognized");
@@ -40,7 +40,7 @@ class PropertyAccessParser
 
     public function match($expression)
     {
-        $result = preg_match('/^\\.(' . self::PATTERN_NAME . ')$/', $expression, $matches);
+        $result = preg_match('/^' . self::PATTERN_CLASS . '\(' . self::PATTERN_ID . '\)$/', $expression);
 
         return ($result === 1);
     }

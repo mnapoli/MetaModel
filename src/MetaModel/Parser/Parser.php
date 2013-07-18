@@ -7,7 +7,7 @@ use JMS\Parser\SimpleLexer;
 use MetaModel\Parser\Model\MethodCall;
 use MetaModel\Parser\Model\Node;
 use MetaModel\Parser\Model\PropertyAccess;
-use MetaModel\Parser\Model\Selector;
+use MetaModel\Parser\Model\IdSelector;
 
 /**
  * MetaModel expression parser
@@ -17,16 +17,18 @@ use MetaModel\Parser\Model\Selector;
 class Parser extends AbstractParser
 {
     const T_UNKNOWN = 0;
-    const T_SELECTOR = 1;
-    const T_PROPERTY_ACCESS = 2;
-    const T_METHOD_CALL = 3;
+    const T_ID_SELECTOR = 1;
+    const T_NAMED_SELECTOR = 2;
+    const T_PROPERTY_ACCESS = 3;
+    const T_METHOD_CALL = 4;
 
     /**
      * @return Parser
      */
     public static function create()
     {
-        $selectorParser = new SelectorParser();
+        $idSelectorParser = new IdSelectorParser();
+        $namedSelectorParser = new NamedSelectorParser();
         $propertyAccessParser = new PropertyAccessParser();
         $methodCallParser = new MethodCallParser();
 
@@ -35,29 +37,33 @@ class Parser extends AbstractParser
                 # ID selector
                 ([\\\\_a-zA-Z0-9]+\([0-9]+\))
 
-                # Do not surround with () because . is not meaningful for our purpose
-                |\.
+                # Named selector
+                |([_a-zA-Z0-9]+)
 
                 # Method call
-                |([_a-zA-Z0-9]+\\(\\))
+                |(\\.[_a-zA-Z0-9]+\\(\\))
 
                 # Property access
-                |([_a-zA-Z0-9]+)
+                |(\\.[_a-zA-Z0-9]+)
             /x', // The x modifier tells PCRE to ignore whitespace in the regex above.
 
             // This maps token types to a human readable name.
             array(
                  self::T_UNKNOWN => 'T_UNKNOWN',
-                 self::T_SELECTOR => 'T_SELECTOR',
+                 self::T_ID_SELECTOR => 'T_ID_SELECTOR',
+                 self::T_NAMED_SELECTOR => 'T_NAMED_SELECTOR',
                  self::T_METHOD_CALL => 'T_METHOD_CALL',
                  self::T_PROPERTY_ACCESS => 'T_PROPERTY_ACCESS',
             ),
 
             // This function tells the lexer which type a token has. The first element is
             // an integer from the map above, the second element the normalized value.
-            function($part) use ($selectorParser, $propertyAccessParser, $methodCallParser) {
-                if ($selectorParser->match($part)) {
-                    return array(self::T_SELECTOR, $part);
+            function($part) use ($idSelectorParser, $namedSelectorParser, $propertyAccessParser, $methodCallParser) {
+                if ($idSelectorParser->match($part)) {
+                    return array(self::T_ID_SELECTOR, $part);
+                }
+                if ($namedSelectorParser->match($part)) {
+                    return array(self::T_NAMED_SELECTOR, $part);
                 }
                 if ($methodCallParser->match($part)) {
                     return array(self::T_METHOD_CALL, $part);
@@ -80,17 +86,24 @@ class Parser extends AbstractParser
      */
     protected function parseInternal()
     {
-        $selectorParser = new SelectorParser();
+        $idSelectorParser = new IdSelectorParser();
+        $namedSelectorParser = new NamedSelectorParser();
         $propertyAccessParser = new PropertyAccessParser();
         $methodCallParser = new MethodCallParser();
 
-        if (!$this->lexer->isNext(self::T_SELECTOR)) {
+        if (!$this->lexer->isNextAny([self::T_ID_SELECTOR, self::T_NAMED_SELECTOR])) {
             throw new ParsingException("First item of the expression should be a selector");
         }
 
-        $part = $this->match(self::T_SELECTOR);
-        /** @var Node $node */
-        $node = $selectorParser->parse($part);
+        if ($this->lexer->isNext(self::T_ID_SELECTOR)) {
+            $part = $this->match(self::T_ID_SELECTOR);
+            /** @var Node $node */
+            $node = $idSelectorParser->parse($part);
+        } else {
+            $part = $this->match(self::T_NAMED_SELECTOR);
+            /** @var Node $node */
+            $node = $namedSelectorParser->parse($part);
+        }
 
         while ($this->lexer->isNextAny([self::T_PROPERTY_ACCESS, self::T_METHOD_CALL])) {
             if ($this->lexer->isNext(self::T_PROPERTY_ACCESS)) {

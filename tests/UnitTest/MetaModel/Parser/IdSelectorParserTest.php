@@ -2,40 +2,40 @@
 
 namespace UnitTest\MetaModel\Parser;
 
-use MetaModel\Parser\Model\Selector;
-use MetaModel\Parser\SelectorParser;
+use MetaModel\Parser\Model\IdSelector;
+use MetaModel\Parser\IdSelectorParser;
 
-class SelectorParserTest extends \PHPUnit_Framework_TestCase
+class IdSelectorParserTest extends \PHPUnit_Framework_TestCase
 {
-    public function testParseSimpleSelector()
+    public function testParseSimpleIdSelector()
     {
-        $selectorParser = new SelectorParser();
+        $parser = new IdSelectorParser();
 
-        $this->assertTrue($selectorParser->match('Article(1)'));
+        $this->assertTrue($parser->match('Article(1)'));
 
-        $selector = $selectorParser->parse('Article(1)');
+        $selector = $parser->parse('Article(1)');
 
-        $this->assertTrue($selector instanceof Selector);
+        $this->assertTrue($selector instanceof IdSelector);
         $this->assertEquals('Article', $selector->getName());
         $this->assertEquals(1, $selector->getId());
     }
 
-    public function testParseNamespaceSelector()
+    public function testParseNamespaceIdSelector()
     {
-        $selectorParser = new SelectorParser();
+        $parser = new IdSelectorParser();
 
-        $this->assertTrue($selectorParser->match('My\Article(1)'));
+        $this->assertTrue($parser->match('My\Article(1)'));
 
-        $selector = $selectorParser->parse('My\Article(1)');
+        $selector = $parser->parse('My\Article(1)');
 
-        $this->assertTrue($selector instanceof Selector);
+        $this->assertTrue($selector instanceof IdSelector);
         $this->assertEquals('My\Article', $selector->getName());
         $this->assertEquals(1, $selector->getId());
     }
 
     public function testMatching()
     {
-        $parser = new SelectorParser();
+        $parser = new IdSelectorParser();
 
         $this->assertTrue($parser->match('Article(1)'));
         $this->assertTrue($parser->match('My\Article(1)'));
@@ -44,7 +44,7 @@ class SelectorParserTest extends \PHPUnit_Framework_TestCase
 
     public function testNotMatching()
     {
-        $parser = new SelectorParser();
+        $parser = new IdSelectorParser();
 
         $this->assertFalse($parser->match('Article'));
         $this->assertFalse($parser->match('Article()'));
