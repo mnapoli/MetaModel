@@ -70,3 +70,8 @@ Those are both ideas and work in progress. To be completed.
 * Advanced replacement for [PropertyAccess](https://github.com/symfony/PropertyAccess), e.g. to build forms, templates (Twig?)
 
 * Paths for anything meta on your model: logs, AOP, ACL (e.g. "`User(1)` can edit `Category(12).articles`")
+
+Projects using MetaModel:
+
+- [MetaConsole](https://github.com/mnapoli/MetaConsole)
+- [Xport](https://github.com/myclabs/Xport)
