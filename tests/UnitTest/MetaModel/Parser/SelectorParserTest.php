@@ -33,6 +33,15 @@ class SelectorParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, $selector->getId());
     }
 
+    public function testMatching()
+    {
+        $parser = new SelectorParser();
+
+        $this->assertTrue($parser->match('Article(1)'));
+        $this->assertTrue($parser->match('My\Article(1)'));
+        $this->assertTrue($parser->match('My_Article(1)'));
+    }
+
     public function testNotMatching()
     {
         $parser = new SelectorParser();

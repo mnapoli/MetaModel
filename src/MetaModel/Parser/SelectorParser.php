@@ -12,7 +12,7 @@ use MetaModel\Parser\Model\Selector;
  */
 class SelectorParser
 {
-    const PATTERN_CLASS = '[\\\\a-zA-Z0-9]+';
+    const PATTERN_CLASS = '[\\\\_a-zA-Z0-9]+';
     const PATTERN_ID = '[0-9]+';
 
     /**

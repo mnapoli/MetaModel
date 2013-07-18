@@ -30,13 +30,13 @@ class Parser extends AbstractParser
         $lexer = new SimpleLexer(
             '/
                 # ID selector
-                ([\\\\a-zA-Z0-9]+\([0-9]+\))
+                ([\\\\_a-zA-Z0-9]+\([0-9]+\))
 
                 # Do not surround with () because . is not meaningful for our purpose
                 |\.
 
                 # Property access
-                |([a-zA-Z0-9]+)
+                |([_a-zA-Z0-9]+)
             /x', // The x modifier tells PCRE to ignore whitespace in the regex above.
 
             // This maps token types to a human readable name.

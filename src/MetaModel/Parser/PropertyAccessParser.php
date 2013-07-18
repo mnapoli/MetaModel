@@ -13,7 +13,7 @@ use MetaModel\Parser\Model\Selector;
  */
 class PropertyAccessParser
 {
-    const PATTERN = '[a-zA-Z0-9]+';
+    const PATTERN = '[_a-zA-Z0-9]+';
 
     /**
      * Parses an expression and returns a model
