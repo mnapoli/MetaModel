@@ -95,4 +95,36 @@ class QueryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(1, $result);
     }
+
+    public function testMethodCall() {
+        $article = new Article(1);
+        $category = new Category(1);
+        $category->addArticle($article);
+        $article->setCategory($category);
+        $this->em->persist($article);
+        $this->em->persist($category);
+        $this->em->flush();
+
+        $result = $this->metaModel->run('FunctionalTest\MetaModel\Fixture\Article(1).getCategory()');
+
+        $this->assertSame($category, $result);
+
+        $result = $this->metaModel->run('FunctionalTest\MetaModel\Fixture\Article(1).getId()');
+
+        $this->assertSame(1, $result);
+    }
+
+    public function testMethodCallRecursive() {
+        $article = new Article(1);
+        $category = new Category(1);
+        $category->addArticle($article);
+        $article->setCategory($category);
+        $this->em->persist($article);
+        $this->em->persist($category);
+        $this->em->flush();
+
+        $result = $this->metaModel->run('FunctionalTest\MetaModel\Fixture\Article(1).getCategory().getId()');
+
+        $this->assertSame(1, $result);
+    }
 }

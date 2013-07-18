@@ -4,7 +4,6 @@ namespace MetaModel\Parser;
 
 use MetaModel\Parser\Model\PropertyAccess;
 use MetaModel\Parser\ParsingException;
-use MetaModel\Parser\Model\Selector;
 
 /**
  * Property access parser
