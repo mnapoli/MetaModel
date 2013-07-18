@@ -2,7 +2,7 @@
 
 namespace UnitTest\MetaModel\Parser;
 
-use MetaModel\Parser\Model\NamedSelector;
+use MetaModel\Model\NamedSelector;
 use MetaModel\Parser\NamedSelectorParser;
 
 class NamedSelectorParserTest extends \PHPUnit_Framework_TestCase

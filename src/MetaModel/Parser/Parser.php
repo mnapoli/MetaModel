@@ -4,10 +4,10 @@ namespace MetaModel\Parser;
 
 use JMS\Parser\AbstractParser;
 use JMS\Parser\SimpleLexer;
-use MetaModel\Parser\Model\MethodCall;
-use MetaModel\Parser\Model\Node;
-use MetaModel\Parser\Model\PropertyAccess;
-use MetaModel\Parser\Model\IdSelector;
+use MetaModel\Model\MethodCall;
+use MetaModel\Model\Node;
+use MetaModel\Model\PropertyAccess;
+use MetaModel\Model\IdSelector;
 
 /**
  * MetaModel expression parser
@@ -82,7 +82,7 @@ class Parser extends AbstractParser
     /**
      *
      * @throws ParsingException
-     * @return Node
+     * @return \MetaModel\Model\Node
      */
     protected function parseInternal()
     {
@@ -101,20 +101,20 @@ class Parser extends AbstractParser
             $node = $idSelectorParser->parse($part);
         } else {
             $part = $this->match(self::T_NAMED_SELECTOR);
-            /** @var Node $node */
+            /** @var \MetaModel\Model\Node $node */
             $node = $namedSelectorParser->parse($part);
         }
 
         while ($this->lexer->isNextAny([self::T_PROPERTY_ACCESS, self::T_METHOD_CALL])) {
             if ($this->lexer->isNext(self::T_PROPERTY_ACCESS)) {
                 $part = $this->match(self::T_PROPERTY_ACCESS);
-                /** @var PropertyAccess $propertyAccess */
+                /** @var \MetaModel\Model\PropertyAccess $propertyAccess */
                 $propertyAccess = $propertyAccessParser->parse($part);
                 $propertyAccess->setSubNode($node);
                 $node = $propertyAccess;
             } elseif ($this->lexer->isNext(self::T_METHOD_CALL)) {
                 $part = $this->match(self::T_METHOD_CALL);
-                /** @var MethodCall $methodCall */
+                /** @var \MetaModel\Model\MethodCall $methodCall */
                 $methodCall = $methodCallParser->parse($part);
                 $methodCall->setSubNode($node);
                 $node = $methodCall;

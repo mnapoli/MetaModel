@@ -2,10 +2,10 @@
 
 namespace UnitTest\MetaModel\Parser;
 
-use MetaModel\Parser\Model\MethodCall;
-use MetaModel\Parser\Model\NamedSelector;
-use MetaModel\Parser\Model\PropertyAccess;
-use MetaModel\Parser\Model\IdSelector;
+use MetaModel\Model\MethodCall;
+use MetaModel\Model\NamedSelector;
+use MetaModel\Model\PropertyAccess;
+use MetaModel\Model\IdSelector;
 use MetaModel\Parser\Parser;
 
 class ParserTest extends \PHPUnit_Framework_TestCase
@@ -14,7 +14,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     {
         $parser = Parser::create();
 
-        /** @var IdSelector $ast */
+        /** @var \MetaModel\Model\IdSelector $ast */
         $ast = $parser->parse('Article(1)');
 
         $this->assertTrue($ast instanceof IdSelector);
@@ -37,7 +37,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     {
         $parser = Parser::create();
 
-        /** @var PropertyAccess $ast */
+        /** @var \MetaModel\Model\PropertyAccess $ast */
         $ast = $parser->parse('Article(1).id');
 
         $this->assertTrue($ast instanceof PropertyAccess);
@@ -53,7 +53,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     {
         $parser = Parser::create();
 
-        /** @var PropertyAccess $ast */
+        /** @var \MetaModel\Model\PropertyAccess $ast */
         $ast = $parser->parse('Article(1).foo.bar');
 
         $this->assertTrue($ast instanceof PropertyAccess);
@@ -65,7 +65,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foo', $subNode->getProperty());
 
         $subNode = $subNode->getSubNode();
-        /** @var IdSelector $subNode */
+        /** @var \MetaModel\Model\IdSelector $subNode */
         $this->assertTrue($subNode instanceof IdSelector);
         $this->assertEquals('Article', $subNode->getName());
         $this->assertEquals(1, $subNode->getId());
@@ -75,7 +75,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     {
         $parser = Parser::create();
 
-        /** @var MethodCall $ast */
+        /** @var \MetaModel\Model\MethodCall $ast */
         $ast = $parser->parse('Article(1).getId()');
 
         $this->assertTrue($ast instanceof MethodCall);
@@ -91,13 +91,13 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     {
         $parser = Parser::create();
 
-        /** @var MethodCall $ast */
+        /** @var \MetaModel\Model\MethodCall $ast */
         $ast = $parser->parse('Article(1).foo().bar()');
 
         $this->assertTrue($ast instanceof MethodCall);
         $this->assertEquals('bar', $ast->getMethod());
 
-        /** @var MethodCall $subNode */
+        /** @var \MetaModel\Model\MethodCall $subNode */
         $subNode = $ast->getSubNode();
         $this->assertTrue($subNode instanceof MethodCall);
         $this->assertEquals('foo', $subNode->getMethod());
@@ -113,7 +113,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     {
         $parser = Parser::create();
 
-        /** @var PropertyAccess $ast */
+        /** @var \MetaModel\Model\PropertyAccess $ast */
         $ast = $parser->parse('Article(1).foo().bar');
 
         $this->assertTrue($ast instanceof PropertyAccess);
@@ -135,7 +135,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     {
         $parser = Parser::create();
 
-        /** @var MethodCall $ast */
+        /** @var \MetaModel\Model\MethodCall $ast */
         $ast = $parser->parse('Article(1).foo.bar()');
 
         $this->assertTrue($ast instanceof MethodCall);

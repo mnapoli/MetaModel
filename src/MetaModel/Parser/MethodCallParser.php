@@ -2,7 +2,7 @@
 
 namespace MetaModel\Parser;
 
-use MetaModel\Parser\Model\MethodCall;
+use MetaModel\Model\MethodCall;
 use MetaModel\Parser\ParsingException;
 
 /**
@@ -21,7 +21,7 @@ class MethodCallParser
      * @param string $expression
      *
      * @throws ParsingException
-     * @return MethodCall
+     * @return \MetaModel\Model\MethodCall
      */
     public function parse($expression)
     {

@@ -3,7 +3,7 @@
 namespace UnitTest\MetaModel\Parser;
 
 use MetaModel\Parser\MethodCallParser;
-use MetaModel\Parser\Model\MethodCall;
+use MetaModel\Model\MethodCall;
 
 class MethodCallParserTest extends \PHPUnit_Framework_TestCase
 {

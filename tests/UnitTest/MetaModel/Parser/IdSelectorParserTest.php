@@ -2,7 +2,7 @@
 
 namespace UnitTest\MetaModel\Parser;
 
-use MetaModel\Parser\Model\IdSelector;
+use MetaModel\Model\IdSelector;
 use MetaModel\Parser\IdSelectorParser;
 
 class IdSelectorParserTest extends \PHPUnit_Framework_TestCase

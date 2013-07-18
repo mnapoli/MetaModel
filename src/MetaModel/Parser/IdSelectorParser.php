@@ -3,7 +3,7 @@
 namespace MetaModel\Parser;
 
 use MetaModel\Parser\ParsingException;
-use MetaModel\Parser\Model\IdSelector;
+use MetaModel\Model\IdSelector;
 
 /**
  * ID selector parser
@@ -21,7 +21,7 @@ class IdSelectorParser
      * @param string $expression
      *
      * @throws ParsingException
-     * @return IdSelector
+     * @return \MetaModel\Model\IdSelector
      */
     public function parse($expression)
     {

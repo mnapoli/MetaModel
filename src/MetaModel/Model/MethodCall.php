@@ -1,6 +1,6 @@
 <?php
 
-namespace MetaModel\Parser\Model;
+namespace MetaModel\Model;
 
 use MetaModel\MetaModel;
 

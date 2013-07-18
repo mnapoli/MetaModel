@@ -2,7 +2,7 @@
 
 namespace MetaModel\Parser;
 
-use MetaModel\Parser\Model\PropertyAccess;
+use MetaModel\Model\PropertyAccess;
 use MetaModel\Parser\ParsingException;
 
 /**

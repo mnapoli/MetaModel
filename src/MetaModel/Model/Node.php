@@ -1,6 +1,6 @@
 <?php
 
-namespace MetaModel\Parser\Model;
+namespace MetaModel\Model;
 
 use MetaModel\MetaModel;
 
@@ -13,7 +13,7 @@ interface Node
 {
     /**
      * @param MetaModel $metaModel
-     * @return Node|mixed
+     * @return \MetaModel\Model\Node|mixed
      */
     public function execute(MetaModel $metaModel);
 }

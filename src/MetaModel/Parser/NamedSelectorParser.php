@@ -2,7 +2,7 @@
 
 namespace MetaModel\Parser;
 
-use MetaModel\Parser\Model\NamedSelector;
+use MetaModel\Model\NamedSelector;
 use MetaModel\Parser\ParsingException;
 
 /**
@@ -20,7 +20,7 @@ class NamedSelectorParser
      * @param string $expression
      *
      * @throws ParsingException
-     * @return NamedSelector
+     * @return \MetaModel\Model\NamedSelector
      */
     public function parse($expression)
     {
