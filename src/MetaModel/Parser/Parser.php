@@ -19,10 +19,11 @@ class Parser extends AbstractParser
 {
     const T_UNKNOWN = 0;
     const T_ID_SELECTOR = 1;
-    const T_NAMED_SELECTOR = 2;
-    const T_PROPERTY_ACCESS = 3;
-    const T_METHOD_CALL = 4;
-    const T_ARRAY_ACCESS = 5;
+    const T_ALL_INSTANCES_SELECTOR = 2;
+    const T_NAMED_SELECTOR = 3;
+    const T_PROPERTY_ACCESS = 4;
+    const T_METHOD_CALL = 5;
+    const T_ARRAY_ACCESS = 6;
 
     /**
      * @return Parser
@@ -30,6 +31,7 @@ class Parser extends AbstractParser
     public static function create()
     {
         $idSelectorParser = new IdSelectorParser();
+        $allInstancesSelectorParser = new AllInstancesSelectorParser();
         $namedSelectorParser = new NamedSelectorParser();
         $propertyAccessParser = new PropertyAccessParser();
         $arrayAccessParser = new ArrayAccessParser();
@@ -40,8 +42,11 @@ class Parser extends AbstractParser
                 # ID selector
                 ([\\\\_a-zA-Z0-9]+\([0-9]+\))
 
+                # All instances selector
+                |([\\\\_a-zA-Z0-9]+\\(\\*\\))
+
                 # Named selector
-                |([_a-zA-Z0-9]+)
+                |([\\\\_a-zA-Z0-9]+)
 
                 # Method call
                 |(\\.[_a-zA-Z0-9]+\\(\\))
@@ -57,6 +62,7 @@ class Parser extends AbstractParser
             array(
                  self::T_UNKNOWN => 'T_UNKNOWN',
                  self::T_ID_SELECTOR => 'T_ID_SELECTOR',
+                 self::T_ALL_INSTANCES_SELECTOR => 'T_ALL_INSTANCES_SELECTOR',
                  self::T_NAMED_SELECTOR => 'T_NAMED_SELECTOR',
                  self::T_METHOD_CALL => 'T_METHOD_CALL',
                  self::T_PROPERTY_ACCESS => 'T_PROPERTY_ACCESS',
@@ -65,9 +71,12 @@ class Parser extends AbstractParser
 
             // This function tells the lexer which type a token has. The first element is
             // an integer from the map above, the second element the normalized value.
-            function($part) use ($idSelectorParser, $namedSelectorParser, $propertyAccessParser, $methodCallParser, $arrayAccessParser) {
+            function($part) use ($idSelectorParser, $allInstancesSelectorParser, $namedSelectorParser, $propertyAccessParser, $methodCallParser, $arrayAccessParser) {
                 if ($idSelectorParser->match($part)) {
                     return array(self::T_ID_SELECTOR, $part);
+                }
+                if ($allInstancesSelectorParser->match($part)) {
+                    return array(self::T_ALL_INSTANCES_SELECTOR, $part);
                 }
                 if ($namedSelectorParser->match($part)) {
                     return array(self::T_NAMED_SELECTOR, $part);
@@ -97,12 +106,13 @@ class Parser extends AbstractParser
     protected function parseInternal()
     {
         $idSelectorParser = new IdSelectorParser();
+        $allInstancesSelectorParser = new AllInstancesSelectorParser();
         $namedSelectorParser = new NamedSelectorParser();
         $propertyAccessParser = new PropertyAccessParser();
         $arrayAccessParser = new ArrayAccessParser();
         $methodCallParser = new MethodCallParser();
 
-        if (!$this->lexer->isNextAny([self::T_ID_SELECTOR, self::T_NAMED_SELECTOR])) {
+        if (!$this->lexer->isNextAny([self::T_ID_SELECTOR, self::T_ALL_INSTANCES_SELECTOR, self::T_NAMED_SELECTOR])) {
             throw new ParsingException("First item of the expression should be a selector");
         }
 
@@ -111,6 +121,10 @@ class Parser extends AbstractParser
             $part = $this->match(self::T_ID_SELECTOR);
             /** @var Node $node */
             $node = $idSelectorParser->parse($part);
+        } elseif ($this->lexer->isNext(self::T_ALL_INSTANCES_SELECTOR)) {
+            $part = $this->match(self::T_ALL_INSTANCES_SELECTOR);
+            /** @var Node $node */
+            $node = $allInstancesSelectorParser->parse($part);
         } else {
             $part = $this->match(self::T_NAMED_SELECTOR);
             /** @var Node $node */

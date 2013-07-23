@@ -27,4 +27,16 @@ class EntityManagerBridge implements ObjectManager
     {
         return $this->entityManager->find($name, $id);
     }
+
+    /**
+     * Returns all the objects of a type.
+     *
+     * @param string $name Object name (class name, …)
+     *
+     * @return array Object
+     */
+    public function getAllByName($name)
+    {
+        return $this->entityManager->getRepository($name)->findAll();
+    }
 }

@@ -56,6 +56,18 @@ class QueryTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($result);
     }
 
+    public function testGetAll()
+    {
+        $article = new Article(1);
+        $this->em->persist($article);
+        $this->em->flush();
+
+        $result = $this->metaModel->run('FunctionalTest\MetaModel\Fixture\Article(*)');
+
+        $this->assertInternalType('array', $result);
+        $this->assertContainsOnly($article, $result);
+    }
+
     public function testGetByName()
     {
         $articleService = new \stdClass();

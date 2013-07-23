@@ -2,6 +2,7 @@
 
 namespace UnitTest\MetaModel\Parser;
 
+use MetaModel\Model\AllInstancesSelector;
 use MetaModel\Model\ArrayAccess;
 use MetaModel\Model\MethodCall;
 use MetaModel\Model\NamedSelector;
@@ -21,6 +22,17 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($ast instanceof IdSelector);
         $this->assertEquals('Article', $ast->getName());
         $this->assertEquals(1, $ast->getId());
+    }
+
+    public function testParseAllInstancesSelector()
+    {
+        $parser = Parser::create();
+
+        /** @var AllInstancesSelector $ast */
+        $ast = $parser->parse('Article(*)');
+
+        $this->assertTrue($ast instanceof AllInstancesSelector);
+        $this->assertEquals('Article', $ast->getName());
     }
 
     public function testParseNamedSelector()

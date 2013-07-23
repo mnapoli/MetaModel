@@ -18,4 +18,13 @@ interface ObjectManager
      * @return mixed|null Object
      */
     public function getById($name, $id);
+
+    /**
+     * Returns all the objects of a type.
+     *
+     * @param string $name Object name (class name, …)
+     *
+     * @return array Object
+     */
+    public function getAllByName($name);
 }
