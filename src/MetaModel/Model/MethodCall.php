@@ -2,6 +2,7 @@
 
 namespace MetaModel\Model;
 
+use MetaModel\ExecutionException;
 use MetaModel\MetaModel;
 
 /**
@@ -27,6 +28,10 @@ class MethodCall implements Node
     public function execute(MetaModel $metaModel)
     {
         $object = $this->subNode->execute($metaModel);
+
+        if (is_null($object)) {
+            throw new ExecutionException("Calling method '$this->method' on null");
+        }
 
         $reflectionMethod = new \ReflectionMethod($object, $this->method);
 
