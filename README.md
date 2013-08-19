@@ -65,6 +65,18 @@ Some libraries are already supported natively:
 
 - **Doctrine**'s Entity Manager: `MetaModel\Bridge\Doctrine\EntityManagerBridge`
 
+    ```php
+    $metaModel = new MetaModel();
+    $metaModel->addObjectManager(new EntityManagerBridge($entityManager));
+    ```
+
+- [**PHP-DI**](https://github.com/mnapoli/PHP-DI) container: `MetaModel\Bridge\PHPDI\PHPDIBridge`
+
+    ```php
+    $metaModel = new MetaModel();
+    $metaModel->addContainer(new PHPDIBridge($container));
+    ```
+
 Add your own by submitting a pull request.
 
 ## Usages
