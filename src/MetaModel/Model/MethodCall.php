@@ -29,8 +29,8 @@ class MethodCall implements Node
     {
         $object = $this->subNode->execute($metaModel);
 
-        if (!is_object($object)) {
-            throw new ExecutionException("Calling method '$this->method' on non-object");
+        if (is_null($object)) {
+            throw new ExecutionException("Calling method '$this->method' on null");
         }
 
         $reflectionMethod = new \ReflectionMethod($object, $this->method);
