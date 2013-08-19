@@ -24,6 +24,6 @@ class PHPDIBridge implements Container
      */
     public function get($name)
     {
-        $this->container->get($name);
+        return $this->container->get($name);
     }
 }
