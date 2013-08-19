@@ -1,18 +1,18 @@
 {
-	"name": "mnapoli/metamodel",
-	"type": "library",
-	"autoload": {
-		"psr-0": {
-			"MetaModel": "src/",
-			"FunctionalTest": "tests/",
-			"UnitTest": "tests/"
-		}
-	},
+    "name": "mnapoli/metamodel",
+    "type": "library",
+    "autoload": {
+        "psr-0": {
+            "MetaModel": "src/",
+            "FunctionalTest": "tests/",
+            "UnitTest": "tests/"
+        }
+    },
     "require": {
         "symfony/property-access": "2.*",
         "jms/parser-lib": "~1.0"
     },
-	"require-dev": {
+    "require-dev": {
         "doctrine/orm": "~2.3"
-	}
+    }
 }
